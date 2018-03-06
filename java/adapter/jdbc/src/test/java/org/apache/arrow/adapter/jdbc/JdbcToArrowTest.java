@@ -129,5 +129,34 @@ public class JdbcToArrowTest {
     private InputStream getResource(String name) {
     	return this.getClass().getClassLoader().getResourceAsStream(name);
     }
-
+	
+  /**
+   * This method tests ArrowData functionality for generating Arrow VectorSchemaRoot object using JDBC records based on limit and offset
+   * 
+   */
+    @Test
+    public void testSqlToArrowData() {
+    	try {
+	    	Table table =
+	                mapper.readValue(
+	                        this.getClass().getClassLoader().getResourceAsStream("test3_h2.yml"), 
+	                        Table.class);
+	        
+	    	createTestData(table);
+	    	int vectorRowCount = 0;
+	    	int counter = 1;
+	        ArrowData arrowData = JdbcToArrow.sqlToArrow(conn, table.getName(), 4);
+	        
+	        while (arrowData.getRecordsWithLimit().getRowCount() >= 1) {
+	        	System.out.print("================  " + counter + "  call to ArrowData ====================" + System.lineSeparator());
+	            vectorRowCount = arrowData.getRecordsWithLimit().getRowCount();
+	            System.out.print("---- Row count for " + counter + " call ---- " + vectorRowCount + System.lineSeparator());
+	            counter ++;
+	        }
+    	} catch (Exception e) {
+        	e.printStackTrace();
+        }
+    }
+	
+	
 }

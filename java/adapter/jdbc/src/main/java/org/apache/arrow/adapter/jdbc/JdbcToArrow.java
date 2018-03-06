@@ -64,6 +64,18 @@ public class JdbcToArrow {
         }
     }
 
-
+    /**
+     * This method returns ArrowData Object to get Arrow Vector based on limit and offset for given table
+     *   
+     * @param connection - Database connection Object
+     * @param tableName - Table name from which records will be fetched
+     * @param limit - Total No. of Records to be fetched
+     * 
+     * @return ArrowData - Instance of ArrowData which will be used to get Arrow Vector by calling its functionality 
+     * 
+     */
+    public static ArrowData sqlToArrow (Connection connection, String tableName, int limit) {
+    	return new ArrowData(connection, tableName, limit);
+    }
 
 }
