@@ -143,19 +143,22 @@ public class JdbcToArrowTest {
 	                        Table.class);
 	        
 	    	createTestData(table);
-	    	int vectorRowCount = 0;
+	    	
 	    	int counter = 1;
-	        ArrowData arrowData = JdbcToArrow.sqlToArrow(conn, table.getName(), 4);
+	        ArrowData arrowData = JdbcToArrow.sqlToArrow(conn, table.getName(), 2);
+	        int vectorRowCount = 0;
 	        
-	        while (arrowData.getRecordsWithLimit().getRowCount() >= 1) {
-	        	System.out.print("================  " + counter + "  call to ArrowData ====================" + System.lineSeparator());
+	        do {
+	        	System.out.print(System.lineSeparator());
 	            vectorRowCount = arrowData.getRecordsWithLimit().getRowCount();
-	            System.out.print("---- Row count for " + counter + " call ---- " + vectorRowCount + System.lineSeparator());
+	            System.out.print("Total no. of rows fetched in - " + counter + " call --> " + vectorRowCount + System.lineSeparator());
 	            counter ++;
-	        }
+	        } while (vectorRowCount > 1);
+
     	} catch (Exception e) {
         	e.printStackTrace();
         }
+        
     }
 	
 	
