@@ -1,0 +1,16 @@
+name: 'H2Table1'
+
+create: 'CREATE TABLE H2Table1 (int_field1 INT, bool_field2 BOOLEAN, tinyint_field3 TINYINT, smallint_field4 SMALLINT, bigint_field5 BIGINT,
+decimal_field6 DECIMAL(20,2), double_field7 DOUBLE, real_field8 REAL, time_field9 TIME, date_field10 DATE, timestamp_field11 TIMESTAMP,
+binary_field12 BINARY(100), varchar_field13 VARCHAR(256), blob_field14 BLOB, clob_field15 CLOB, char_field16 CHAR(16), bit_field17 BIT, 
+identity_field18 IDENTITY, varchar_ignorecase_field19 VARCHAR_IGNORECASE(30), UUID_field20 UUID, float_field21 FLOAT);'
+
+data: 
+ - 'INSERT INTO H2Table1 VALUES (101, 1, 41, 12001, 92233721, 17345667781.23, 56478356781.345, 56478356781.345, ''1:45:35'', 
+ ''2018-02-1'', ''2018-02-1 12:45:35'', ''736f6d6520746578742074686174206e6565647320746f20626520636f6e76657274656420746f2062696e617271'', 
+ ''some text as varchar1'', ''736f6d6520746578742074686174206e6565647320746f20626520636f6e76657274656420746f2062696e617271'', 
+ ''some text as clob1'', ''some char text1'', 1, 10001, ''varchar_ignorecase_1'', ''a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'');'
+
+query: 'SELECT UCASE (char_field16) AS Char_Val, UCASE (varchar_field13) AS VarChar_Val FROM H2Table1;'
+
+drop: 'DROP TABLE H2Table1;'
