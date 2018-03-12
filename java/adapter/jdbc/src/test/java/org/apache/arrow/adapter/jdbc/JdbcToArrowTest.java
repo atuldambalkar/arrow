@@ -21,11 +21,12 @@ package org.apache.arrow.adapter.jdbc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import org.apache.arrow.vector.VectorSchemaRoot;
+import org.apache.arrow.vector.types.Types;
+import org.apache.arrow.vector.FieldVector;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.io.File;
+import java.util.List;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -91,7 +92,7 @@ public class JdbcToArrowTest {
         }
     }
 
-    @Test
+   // @Test
     public void sqlToArrowTest() throws Exception {
 
         Table table =
@@ -134,7 +135,7 @@ public class JdbcToArrowTest {
    * This method tests ArrowData functionality for generating Arrow VectorSchemaRoot object using JDBC records based on limit and offset
    * 
    */
-    @Test
+   // @Test
     public void testSqlToArrowData() {
     	try {
 	    	Table table =
@@ -161,5 +162,46 @@ public class JdbcToArrowTest {
         
     }
 	
-	
+    @Test
+    public void testSqlToArrowWithQuery() { 
+        try {
+        	JdbcToArrowHelper helper = new JdbcToArrowHelper();
+        	Table table =
+                    mapper.readValue(
+                            this.getClass().getClassLoader().getResourceAsStream("test3_h2.yml"),
+                            Table.class);
+
+            VectorSchemaRoot root = JdbcToArrow.sqlToArrow(conn, table.getQuery());
+            System.out.print("Total row count is - " + root.getRowCount() + System.lineSeparator());
+            
+            System.out.println("schema is - "  + root.getSchema().toString() + System.lineSeparator());
+            
+            List<FieldVector>  fieldVectorList = root.getFieldVectors();
+            System.out.println("Total field vectors - " + fieldVectorList.size() + System.lineSeparator());
+          
+            for(int j = 0; j < fieldVectorList.size(); j++){
+                Types.MinorType mt = fieldVectorList.get(j).getMinorType();
+                switch(mt){
+                	case TINYINT:helper.getTinyIntVectorValues(fieldVectorList.get(j)); break;
+                	case SMALLINT:helper.getSmallIntVectorValues(fieldVectorList.get(j)); break;
+                	case INT: helper.getIntVectorValues(fieldVectorList.get(j)); break;
+                    case BIGINT: helper.getBigIntVectorValues(fieldVectorList.get(j)); break;
+                    case FLOAT4: helper.getFloat4VectorValues(fieldVectorList.get(j));break;
+                    case FLOAT8: helper.getFloat8VectorValues(fieldVectorList.get(j));break;
+                    case BIT: helper.getBitBooleanVectorValues(fieldVectorList.get(j));break;
+                    case DECIMAL: helper.getDecimalVectorValues(fieldVectorList.get(j));break;
+                    case DATEMILLI: helper.getDateVectorValues(fieldVectorList.get(j));break;
+                    case TIMEMILLI: helper.getTimeVectorValues(fieldVectorList.get(j));break;
+                    case TIMESTAMPMILLI: helper.getTimeStampVectorValues(fieldVectorList.get(j));break;
+                    case VARCHAR: helper.getVarcharVectorValues(fieldVectorList.get(j));break;
+                    case VARBINARY: helper.getVarBinaryVectorValues(fieldVectorList.get(j)); break;
+                    default: 
+                    	System.out.println("Reading unknown type ....");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } 
+    	
+    }
 }
