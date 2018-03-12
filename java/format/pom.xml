@@ -45,7 +45,7 @@
       <version>${os-maven-plugin.version}</version>
     </extension>
   </extensions>
-
+<pluginManagement>
   <plugins>
     <plugin> <!-- download the flatbuffer compiler -->
       <groupId>org.apache.maven.plugins</groupId>
@@ -151,14 +151,8 @@
         </execution>
       </executions>
     </plugin>
-    <plugin> <!-- no checkstyle on the generated code -->
-      <groupId>org.apache.maven.plugins</groupId>
-      <artifactId>maven-checkstyle-plugin</artifactId>
-      <configuration>
-        <skip>true</skip>
-      </configuration>
-    </plugin>
-  </plugins>
 
+  </plugins>
+</pluginManagement>
 </build>
 </project>
